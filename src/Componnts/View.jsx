@@ -1,9 +1,13 @@
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import axios, { Axios } from 'axios'
 import React, { useEffect, useState } from 'react'
+import Add from './Add'
 
 const View = () => {
     var [students,setstudents]=useState([])
+    var[update,setupdate]=useState(false)
+    var[selected,setselected]=useState([])
+    
     useEffect(()=>{
        axios.get('http://localhost:3005/students')
        .then(response=>{setstudents(students=response.data)
@@ -20,9 +24,12 @@ const View = () => {
         })
         .catch(err=>console.log(err))
     }
-  return (
- <TableContainer>
-    <Table>
+    const updatevalue=(value)=>{
+        setselected(value)
+        setupdate(true)
+    }
+    var finaljsx = <TableContainer  >
+    <Table >
         <TableHead>
             <TableRow>
                 <TableCell>
@@ -34,6 +41,8 @@ const View = () => {
                 <TableCell>
                     grade
                 </TableCell>
+                <TableCell>update</TableCell>
+                <TableCell>delete</TableCell>
             </TableRow>
         </TableHead>
         <TableBody>
@@ -42,13 +51,19 @@ const View = () => {
                     <TableCell>{value.id}</TableCell>
                     <TableCell>{value.name}</TableCell>
                     <TableCell>{value.grade}</TableCell>
-                    <Button  onClick={()=>deletevalue(value.id)} color='error'>Delete</Button>
-                    <Button color="success">update</Button>
+                    <TableCell>  <Button color="success" onClick={()=>updatevalue(value)}>update</Button></TableCell>
+                    <TableCell> <Button  onClick={()=>deletevalue(value.id)} color='error'>Delete</Button></TableCell>
+                
+                  
                  </TableRow>
             })}
         </TableBody>
     </Table>
  </TableContainer>
+ if(update)
+ finaljsx= <Add data={selected}method='put'/>
+  return (
+finaljsx
   )
 }
 
